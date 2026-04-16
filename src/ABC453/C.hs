@@ -1,5 +1,6 @@
 module ABC453.C where
 
+-- AC: https://atcoder.jp/contests/abc453/submissions/74997084
 import Read (readInt, readInts)
 
 crossed :: Int -> Int -> Bool

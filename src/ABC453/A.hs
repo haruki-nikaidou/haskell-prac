@@ -1,5 +1,6 @@
 module ABC453.A where
 
+-- AC: https://atcoder.jp/contests/abc453/submissions/74997014
 import qualified Data.ByteString.Char8 as BS
 import Read (readInt, readString)
 
