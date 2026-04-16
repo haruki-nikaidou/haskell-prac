@@ -1,4 +1,4 @@
-module ABC453.D where
+module ABC453.D (main') where
 
 import qualified Data.ByteString.Char8 as BS
 import Data.Map.Strict (Map)

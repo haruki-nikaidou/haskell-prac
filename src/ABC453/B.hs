@@ -1,4 +1,4 @@
-module ABC453.B where
+module ABC453.B (main') where
 
 -- WA: https://atcoder.jp/contests/abc453/submissions/74997070
 -- CE: https://atcoder.jp/contests/abc453/submissions/74997214

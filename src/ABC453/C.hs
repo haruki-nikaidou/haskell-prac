@@ -1,4 +1,4 @@
-module ABC453.C where
+module ABC453.C (main') where
 
 -- AC: https://atcoder.jp/contests/abc453/submissions/74997084
 import Read (readInt, readInts)

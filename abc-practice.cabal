@@ -33,6 +33,7 @@ library
       ABC453.F
       ABC453.G
       AbstractAlgebra
+      EnhancedData.SegmentTree
       Read
   other-modules:
       Paths_abc_practice
