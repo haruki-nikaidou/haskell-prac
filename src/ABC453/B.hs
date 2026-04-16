@@ -1,6 +1,5 @@
 module ABC453.B where
 
-import qualified Data.ByteString.Char8 as BS
 import Data.List (mapAccumL)
 import Data.Maybe (mapMaybe)
 import Read (readInts)
@@ -10,23 +9,23 @@ solve _ [] = []
 solve threshold raw_data =
   let indexed = zip [0 ..] raw_data
       start = head indexed
-      filterRaw lastVal (idx, val)
-        | filterData threshold lastVal (idx, val) = (val, Just (idx, val))
-        | otherwise = (val, Nothing)
+      filterRaw = filterData threshold
       (_, maybes) = mapAccumL filterRaw (snd start) (tail indexed)
    in start : mapMaybe id maybes
 
-filterData :: Int -> Int -> (Int, Int) -> Bool
-filterData threshold lastVal (_, val) = abs (val - lastVal) >= threshold
+filterData :: Int -> Int -> (Int, Int) -> (Int, Maybe (Int, Int))
+filterData threshold lastVal (idx, val)
+  | abs (val - lastVal) >= threshold = (val, Just (idx, val))
+  | otherwise = (lastVal, Nothing)
+
+printAns :: [(Int, Int)] -> IO ()
+printAns ans =
+  let rows = map (\(idx, val) -> (show idx) <> " " <> (show val)) ans
+   in mapM_ putStrLn rows
 
 main' :: IO ()
 main' = do
   [_, x] <- readInts
   vs <- readInts
   let ans = solve x vs
-  mapM_
-    ( \(idx, val) ->
-        BS.putStrLn $
-          BS.pack (show idx) <> BS.singleton ' ' <> BS.pack (show val)
-    )
-    ans
+  printAns ans
