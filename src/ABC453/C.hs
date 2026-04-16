@@ -3,7 +3,7 @@ module ABC453.C where
 import Lib (readInt, readInts)
 
 crossed :: Int -> Int -> Bool
-crossed x y = x < 0 && y > 0 || x > 0 && y < 0
+crossed x y = x < 0 && y >= 0 || x >= 0 && y < 0
 
 solve :: Int -> [Int] -> Int
 solve _ [] = 0
@@ -19,4 +19,4 @@ main' :: IO ()
 main' = do
   _ <- readInt
   ls <- readInts
-  print $ solve 1 ls
+  print $ solve 0 ls
