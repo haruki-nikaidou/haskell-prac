@@ -1,10 +1,10 @@
-module AB453.A where
+module ABC453.A where
 
 import qualified Data.ByteString.Char8 as BS
 import Lib (readInt, readString)
 
-main :: IO ()
-main = do
+main' :: IO ()
+main' = do
   lead <- readInt
   a <- readString
   BS.putStrLn $ dropLeadingOs lead a

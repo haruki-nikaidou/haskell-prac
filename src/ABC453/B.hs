@@ -16,8 +16,8 @@ solve threshold raw_data =
       (_, maybes) = mapAccumL filterRaw (snd start) (tail indexed)
    in start : mapMaybe id maybes
 
-main :: IO ()
-main = do
+main' :: IO ()
+main' = do
   [_, x] <- readInts
   vs <- readInts
   let ans = solve x vs
