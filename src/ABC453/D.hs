@@ -73,10 +73,10 @@ solve grid board_size =
         Seq State ->
         Set State ->
         Map State (State, Dir) ->
-        Maybe (Map State (State, Dir))
+        Maybe (State, Map State (State, Dir))
       bfs Seq.Empty _ _ = Nothing
       bfs (cur :<| queue) seen parent
-        | fst cur == goal_pos = Just parent
+        | fst cur == goal_pos = Just (cur, parent)
         | otherwise =
             let next_states = possibleNextStates grid board_size cur
                 fresh_states = filter (\(s, _) -> Set.notMember s seen) next_states
@@ -88,12 +88,12 @@ solve grid board_size =
       result = bfs (Seq.singleton initial_state) initial_seen Map.empty
    in case result of
         Nothing -> NoSolution
-        Just parent ->
+        Just (goal_state, parent) ->
           let recTrace s acc =
                 case Map.lookup s parent of
                   Nothing -> acc
                   Just (prev, d) -> recTrace prev (d : acc)
-              path = recTrace (goal_pos, None) []
+              path = recTrace goal_state []
            in YesSolution path
 
 main' :: IO ()
