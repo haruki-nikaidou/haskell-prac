@@ -11,10 +11,13 @@ solve threshold raw_data =
   let indexed = zip [0 ..] raw_data
       start = head indexed
       filterRaw lastVal (idx, val)
-        | abs (val - lastVal) < threshold = (lastVal, Nothing)
-        | otherwise = (val, Just (idx, val))
+        | filterData threshold lastVal (idx, val) = (val, Just (idx, val))
+        | otherwise = (val, Nothing)
       (_, maybes) = mapAccumL filterRaw (snd start) (tail indexed)
    in start : mapMaybe id maybes
+
+filterData :: Int -> Int -> (Int, Int) -> Bool
+filterData threshold lastVal (_, val) = abs (val - lastVal) >= threshold
 
 main' :: IO ()
 main' = do
