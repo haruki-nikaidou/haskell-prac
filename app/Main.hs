@@ -1,6 +1,4 @@
-module Main (main) where
-
-import Lib
+import ABC453.A (solve)
 
 main :: IO ()
-main = someFunc
+main = solve
