@@ -25,7 +25,13 @@ source-repository head
 
 library
   exposed-modules:
-      Lib
+      ABC453.A
+      ABC453.B
+      ABC453.C
+      ABC453.D
+      ABC453.E
+      ABC453.F
+      ABC453.G
   other-modules:
       Paths_abc_practice
   autogen-modules:
