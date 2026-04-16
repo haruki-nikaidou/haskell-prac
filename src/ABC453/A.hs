@@ -1,7 +1,7 @@
 module ABC453.A where
 
 import qualified Data.ByteString.Char8 as BS
-import Lib (readInt, readString)
+import Read (readInt, readString)
 
 main' :: IO ()
 main' = do

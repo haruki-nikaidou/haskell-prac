@@ -3,7 +3,7 @@ module ABC453.B where
 import qualified Data.ByteString.Char8 as BS
 import Data.List (mapAccumL)
 import Data.Maybe (mapMaybe)
-import Lib (readInts)
+import Read (readInts)
 
 solve :: Int -> [Int] -> [(Int, Int)]
 solve _ [] = []

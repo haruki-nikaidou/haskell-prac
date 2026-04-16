@@ -1,14 +1,15 @@
 module ABC453.D where
 
+import qualified Data.ByteString.Char8 as BS
 import Data.Map.Strict (Map)
 import qualified Data.Map.Strict as Map
 import Data.Sequence (Seq (..))
 import qualified Data.Sequence as Seq
 import Data.Set (Set)
 import qualified Data.Set as Set
-import Lib (readInts)
+import Read (readInts)
 
-type Grid = [[Char]]
+type Grid = BS.ByteString
 
 newtype Pos = Pos (Int, Int) deriving (Eq, Ord)
 
@@ -37,7 +38,7 @@ allDirs = [U, D, L, R]
 
 possibleNextStates :: Grid -> (BoardSize) -> State -> [(State, Dir)]
 possibleNextStates grid (BoardSize (h, w)) ((Pos (r, c)), prev_dir) =
-  let cell = grid !! r !! c
+  let cell = BS.index grid (r * w + c)
       candidates = case cell of
         'o' -> if prev_dir == None then allDirs else [prev_dir]
         'x' -> filter (/= prev_dir) allDirs
@@ -48,7 +49,7 @@ possibleNextStates grid (BoardSize (h, w)) ((Pos (r, c)), prev_dir) =
                    && r' < h
                    && c' >= 0
                    && c' < w
-                   && grid !! r' !! c' /= '#'
+                   && BS.index grid (r' * w + c') /= '#'
                )
               then Just (Pos (r', c'))
               else Nothing
@@ -65,7 +66,7 @@ printSolution (YesSolution dirs) = do
 solve :: Grid -> BoardSize -> Solution
 solve grid board_size =
   let BoardSize (h, w) = board_size
-      findCell ch = head [(r, c) | r <- [0 .. h - 1], c <- [0 .. w - 1], grid !! r !! c == ch]
+      findCell ch = head [(r, c) | r <- [0 .. h - 1], c <- [0 .. w - 1], BS.index grid (r * w + c) == ch]
       start_pos = Pos (findCell 'S')
       goal_pos = Pos (findCell 'G')
       initial_state = (start_pos, None)
@@ -99,5 +100,5 @@ solve grid board_size =
 main' :: IO ()
 main' = do
   [h, w] <- readInts
-  grid <- sequence [getLine | _ <- [1 .. h]]
+  grid <- BS.concat <$> sequence [BS.getLine | _ <- [1 .. h]]
   printSolution $ solve grid (BoardSize (h, w))

@@ -1,6 +1,6 @@
 module ABC453.C where
 
-import Lib (readInt, readInts)
+import Read (readInt, readInts)
 
 crossed :: Int -> Int -> Bool
 crossed x y = x < 0 && y >= 0 || x >= 0 && y < 0
