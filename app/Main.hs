@@ -1,4 +1,4 @@
-import qualified ABC455.C
+import qualified ABC455.D
 
 main :: IO ()
-main = ABC455.C.main'
+main = ABC455.D.main'
