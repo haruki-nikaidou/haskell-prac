@@ -140,24 +140,24 @@ fork :: SegTree a b -> (SegTree a b, SegTree a b)
 fork (Node _ _ l r) = (l, r)
 fork t = (t, Empty)
 
-data ABCFReq = ABCFReq
+data ABCFreq = ABCFreq
   { a :: Int,
     b :: Int,
     c :: Int
   }
 
-instance Semigroup ABCFReq where
-  (ABCFReq a1 b1 c1) <> (ABCFReq a2 b2 c2) = ABCFReq (a1 + a2) (b1 + b2) (c1 + c2)
+instance Semigroup ABCFreq where
+  (ABCFreq a1 b1 c1) <> (ABCFreq a2 b2 c2) = ABCFreq (a1 + a2) (b1 + b2) (c1 + c2)
 
-instance Monoid ABCFReq where
-  mempty = ABCFReq 0 0 0
+instance Monoid ABCFreq where
+  mempty = ABCFreq 0 0 0
 
-instance Measured [Char] ABCFReq where
-  measure s = ABCFReq (count 'A' s) (count 'B' s) (count 'C' s)
+instance Measured [Char] ABCFreq where
+  measure s = ABCFreq (count 'A' s) (count 'B' s) (count 'C' s)
     where
       count ch = length . filter (== ch)
 
-buildSegTreeForABC :: [String] -> SegTree [Char] ABCFReq
+buildSegTreeForABC :: [String] -> SegTree [Char] ABCFreq
 buildSegTreeForABC = build
 
 solve :: () -> ()
