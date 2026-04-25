@@ -24,6 +24,7 @@ dependencies:
   - bytestring
   - containers
   - array
+  - vector
 
 ghc-options:
   - -Wall
