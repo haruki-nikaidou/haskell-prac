@@ -45,6 +45,7 @@ library
       AbstractAlgebra
       EnhancedData.SegmentTree
       Read
+      ZZZ.Compress0413
   other-modules:
       Paths_abc_practice
   autogen-modules:

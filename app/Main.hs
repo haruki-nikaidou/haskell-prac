@@ -1,4 +1,4 @@
-import qualified ABC455.D
+import qualified ZZZ.Compress0413
 
 main :: IO ()
-main = ABC455.D.main'
+main = ZZZ.Compress0413.main
