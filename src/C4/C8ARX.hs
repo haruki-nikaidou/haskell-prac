@@ -11,7 +11,7 @@ allSubsequences [] = [[]]
 allSubsequences (x : xs) = let subs = allSubsequences xs in subs ++ map (x :) subs
 
 solve :: [Int] -> Int -> Bool
-solve list target = any (== target) (map sum (allSubsequences list))
+solve list target = any (== target) $ map sum $ allSubsequences list
 
 printYesNo :: Bool -> IO ()
 printYesNo True = putStrLn "Yes"
