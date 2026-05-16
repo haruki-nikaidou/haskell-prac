@@ -1,8 +1,10 @@
 module ABC453.D (main') where
 
 import qualified Data.ByteString.Char8 as BS
+import Data.List (find)
 import Data.Map.Strict (Map)
 import qualified Data.Map.Strict as Map
+import Data.Maybe (fromJust)
 import Data.Sequence (Seq (..))
 import qualified Data.Sequence as Seq
 import Data.Set (Set)
@@ -66,7 +68,10 @@ printSolution (YesSolution dirs) = do
 solve :: Grid -> BoardSize -> Solution
 solve grid board_size =
   let BoardSize (h, w) = board_size
-      findCell ch = head [(r, c) | r <- [0 .. h - 1], c <- [0 .. w - 1], BS.index grid (r * w + c) == ch]
+      findCell ch = fromJust $ do
+        r <- find (\r -> any (\c -> BS.index grid (r * w + c) == ch) [0 .. w - 1]) [0 .. h - 1]
+        c <- find (\c -> BS.index grid (r * w + c) == ch) [0 .. w - 1]
+        return (r, c)
       start_pos = Pos (findCell 'S')
       goal_pos = Pos (findCell 'G')
       initial_state = (start_pos, None)

@@ -9,11 +9,11 @@ import Precoded.Read (readInts)
 
 solve :: Int -> [Int] -> [(Int, Int)]
 solve _ [] = []
-solve threshold raw_data =
-  let indexed = zip [0 ..] raw_data
-      start = head indexed
+solve threshold (v : vs) =
+  let start = (0, v)
+      indexed = zip [1 ..] vs
       filterRaw = filterData threshold
-      (_, maybes) = mapAccumL filterRaw (snd start) (tail indexed)
+      (_, maybes) = mapAccumL filterRaw (snd start) indexed
    in start : mapMaybe id maybes
 
 filterData :: Int -> Int -> (Int, Int) -> (Int, Maybe (Int, Int))
