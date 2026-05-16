@@ -53,6 +53,7 @@ library
       C4.C74JC
       C4.C8ARX
       Precoded.AbstractAlgebra
+      Precoded.EnhancedData.DisjointSet
       Precoded.EnhancedData.SegmentTree
       Precoded.Read
       ZZZ.Compress0413
@@ -69,6 +70,7 @@ library
     , bytestring
     , containers
     , fingertree
+    , mtl
     , vector
   default-language: Haskell2010
 
@@ -88,6 +90,7 @@ executable abc-practice-exe
     , bytestring
     , containers
     , fingertree
+    , mtl
     , vector
   default-language: Haskell2010
 
@@ -108,5 +111,6 @@ test-suite abc-practice-test
     , bytestring
     , containers
     , fingertree
+    , mtl
     , vector
   default-language: Haskell2010

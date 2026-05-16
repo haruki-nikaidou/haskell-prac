@@ -26,6 +26,7 @@ dependencies:
   - array
   - vector
   - fingertree
+  - mtl
 
 ghc-options:
   - -Wall
