@@ -4,7 +4,6 @@ module Precoded.EnhancedData.ChthollyTree where
 
 import Data.Map.Strict (Map)
 import qualified Data.Map.Strict as Map
-import Data.Maybe (fromMaybe)
 
 data RangeNode a = RangeNode
   { left :: Int,
@@ -29,66 +28,76 @@ assignN (l, r) v node@(RangeNode nl nr nv)
 toListN :: RangeNode a -> [(Int, a)]
 toListN (RangeNode l r v) = [(i, v) | i <- [l .. r - 1]]
 
-newtype RangeTree a = RangeTree {getTree :: Map Int (RangeNode a)}
+newtype ChthollyTree a = ChthollyTree {getTree :: Map Int (RangeNode a)}
   deriving (Show)
 
-empty :: RangeTree a
-empty = RangeTree Map.empty
+empty :: ChthollyTree a
+empty = ChthollyTree Map.empty
 
-fromList :: (Eq a) => [(Int, a)] -> RangeTree a
+fromList :: (Eq a) => [(Int, a)] -> ChthollyTree a
 fromList = foldr step empty . runs
   where
     runs [] = []
     runs ((i, v) : xs) =
       let (same, rest) = span (\(j, w) -> w == v && j == i + length same) xs
        in (i, i + 1 + length same, v) : runs rest
-    step (l, r, v) (RangeTree m) =
-      RangeTree (Map.insert l (RangeNode l r v) m)
+    step (l, r, v) (ChthollyTree m) =
+      ChthollyTree (Map.insert l (RangeNode l r v) m)
 
-insertNode :: RangeNode a -> RangeTree a -> RangeTree a
-insertNode n (RangeTree m) = RangeTree (Map.insert (left n) n m)
+insertNode :: RangeNode a -> ChthollyTree a -> ChthollyTree a
+insertNode n (ChthollyTree m) = ChthollyTree (Map.insert (left n) n m)
 
-splitAt' :: Int -> RangeTree a -> RangeTree a
-splitAt' i t@(RangeTree m) =
+splitAt' :: Int -> ChthollyTree a -> ChthollyTree a
+splitAt' i t@(ChthollyTree m) =
   case Map.lookupLE i m of
     Just (_, (RangeNode l r v))
       | i > l && i < r ->
           let leftPart = RangeNode l i v
               rightPart = RangeNode i r v
-           in RangeTree (Map.insert i rightPart (Map.insert l leftPart m))
+           in ChthollyTree (Map.insert i rightPart (Map.insert l leftPart m))
       | otherwise -> t
     Nothing -> t
 
-assign :: (Eq a) => Int -> Int -> a -> RangeTree a -> RangeTree a
+assign :: (Eq a) => Int -> Int -> a -> ChthollyTree a -> ChthollyTree a
 assign l r v tree
   | l >= r = tree
   | otherwise =
-      let RangeTree m0 = splitAt' r (splitAt' l tree)
+      let ChthollyTree m0 = splitAt' r (splitAt' l tree)
           (below, _, fromL) = Map.splitLookup l m0 -- node at key l (if any) is inside [l,r), drop it
           (_, mR, above) = Map.splitLookup r fromL -- node at key r stays (it's outside [l,r))
           above' = maybe above (\n -> Map.insert r n above) mR
           m1 = Map.insert l (RangeNode l r v) (Map.union below above')
-       in coalesceAt r (coalesceAt l (RangeTree m1))
+       in coalesceAt r (coalesceAt l (ChthollyTree m1))
 
-coalesceAt :: (Eq a) => Int -> RangeTree a -> RangeTree a
-coalesceAt k t@(RangeTree m) =
+coalesceAt :: (Eq a) => Int -> ChthollyTree a -> ChthollyTree a
+coalesceAt k t@(ChthollyTree m) =
   case Map.lookup k m of
     Just (RangeNode l r v)
-      | Just (RangeNode l' r' v') <- Map.lookupLT l m,
+      | Just (_, RangeNode l' r' v') <- Map.lookupLT l m,
         r' == l,
         v' == v ->
-          RangeTree
+          ChthollyTree
             . Map.insert l' (RangeNode l' r v)
             . Map.delete l
             $ m
     _ -> t
 
-lookup :: Int -> RangeTree a -> Maybe a
-lookup i (RangeTree m) =
+lookup :: Int -> ChthollyTree a -> Maybe a
+lookup i (ChthollyTree m) =
   case Map.lookupLE i m of
     Just (_, RangeNode _ r v) | i < r -> Just v
     _ -> Nothing
 
-toList :: RangeTree a -> [(Int, a)]
-toList (RangeTree m) =
+toList :: ChthollyTree a -> [(Int, a)]
+toList (ChthollyTree m) =
   concatMap (\(RangeNode l r v) -> [(i, v) | i <- [l .. r - 1]]) (Map.elems m)
+
+instance Foldable ChthollyTree where
+  foldr f z (ChthollyTree m) =
+    Map.foldr (\(RangeNode l r v) acc -> foldrTimes (r - l) f v acc) z m
+    where
+      foldrTimes 0 _ _ acc = acc
+      foldrTimes n g x acc = g x (foldrTimes (n - 1) g x acc)
+
+  length (ChthollyTree m) =
+    Map.foldr (\(RangeNode l r _) acc -> acc + (r - l)) 0 m
