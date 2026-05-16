@@ -59,15 +59,7 @@ splitAt' i t@(ChthollyTree m) =
     Nothing -> t
 
 assign :: (Eq a) => Int -> Int -> a -> ChthollyTree a -> ChthollyTree a
-assign l r v tree
-  | l >= r = tree
-  | otherwise =
-      let ChthollyTree m0 = splitAt' r (splitAt' l tree)
-          (below, _, fromL) = Map.splitLookup l m0 -- node at key l (if any) is inside [l,r), drop it
-          (_, mR, above) = Map.splitLookup r fromL -- node at key r stays (it's outside [l,r))
-          above' = maybe above (\n -> Map.insert r n above) mR
-          m1 = Map.insert l (RangeNode l r v) (Map.union below above')
-       in coalesceAt r (coalesceAt l (ChthollyTree m1))
+assign l r v = updateRange l r (const v)
 
 coalesceAt :: (Eq a) => Int -> ChthollyTree a -> ChthollyTree a
 coalesceAt k t@(ChthollyTree m) =
@@ -101,3 +93,20 @@ instance Foldable ChthollyTree where
 
   length (ChthollyTree m) =
     Map.foldr (\(RangeNode l r _) acc -> acc + (r - l)) 0 m
+
+updateRange :: (Eq a) => Int -> Int -> (a -> a) -> ChthollyTree a -> ChthollyTree a
+updateRange a b f tree
+  | a >= b = tree
+  | otherwise =
+      let ChthollyTree m0 = splitAt' b (splitAt' a tree)
+          (below, _, fromA) = Map.splitLookup a m0
+          (inside, mB, above) = Map.splitLookup b fromA
+          above' = maybe above (\n -> Map.insert b n above) mB
+          inside' = Map.map (\(RangeNode l r v) -> RangeNode l r (f v)) inside
+          m1 = Map.unions [below, inside', above']
+          coalesceInside :: (Eq a) => Int -> Int -> ChthollyTree a -> ChthollyTree a
+          coalesceInside a' b' (ChthollyTree m) =
+            let -- Collect keys in [a, b] in ascending order; coalesce each in turn.
+                keysToCheck = takeWhile (<= b') . dropWhile (< a') $ Map.keys m
+             in foldr coalesceAt (ChthollyTree m) keysToCheck
+       in coalesceInside a b (ChthollyTree m1)
