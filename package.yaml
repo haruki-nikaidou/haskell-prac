@@ -25,6 +25,7 @@ dependencies:
   - containers
   - array
   - vector
+  - fingertree
 
 ghc-options:
   - -Wall
