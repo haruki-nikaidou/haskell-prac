@@ -42,12 +42,19 @@ library
       ABC455.E
       ABC455.F
       ABC455.G
-      AbstractAlgebra
+      ABC458.A
+      ABC458.B
+      ABC458.C
+      ABC458.D
+      ABC458.E
+      ABC458.F
+      ABC458.G
       C4.C2YQS
       C4.C74JC
       C4.C8ARX
-      EnhancedData.SegmentTree
-      Read
+      Precoded.AbstractAlgebra
+      Precoded.EnhancedData.SegmentTree
+      Precoded.Read
       ZZZ.Compress0413
   other-modules:
       Paths_abc_practice
