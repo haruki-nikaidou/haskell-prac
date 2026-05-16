@@ -2,6 +2,7 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE TypeFamilies #-}
+{-# LANGUAGE TypeOperators #-}
 {-# LANGUAGE UndecidableInstances #-}
 
 module Precoded.EnhancedData.SegmentTree where
@@ -24,7 +25,7 @@ class (Monoid (Agg a)) => Aggregable a where
 
 newtype SegElem a = Elem {getElem :: a}
 
-instance (Aggregable a) => Measured (Sized (Agg a)) (SegElem a) where
+instance (Aggregable a, m ~ Agg a) => Measured (Sized m) (SegElem a) where
   measure (Elem x) = Sized (Sum 1) (toAgg x)
 
 type SegTree a = FingerTree (Sized (Agg a)) (SegElem a)
