@@ -5,7 +5,7 @@ module ABC455.E where
 
 import Data.Foldable (toList)
 import Data.List (sort)
-import Read (readInts)
+import Precoded.Read (readInts)
 import Prelude hiding ((!!))
 
 class (Monoid b) => Measured a b where

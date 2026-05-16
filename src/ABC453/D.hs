@@ -7,7 +7,7 @@ import Data.Sequence (Seq (..))
 import qualified Data.Sequence as Seq
 import Data.Set (Set)
 import qualified Data.Set as Set
-import Read (readInts)
+import Precoded.Read (readInts)
 
 type Grid = BS.ByteString
 

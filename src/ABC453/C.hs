@@ -1,7 +1,7 @@
 module ABC453.C (main') where
 
 -- AC: https://atcoder.jp/contests/abc453/submissions/74997084
-import Read (readInt, readInts)
+import Precoded.Read (readInt, readInts)
 
 crossed :: Int -> Int -> Bool
 crossed x y = x < 0 && y >= 0 || x >= 0 && y < 0

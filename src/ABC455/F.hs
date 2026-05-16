@@ -1,6 +1,6 @@
 module ABC455.F where
 
-import Read (readInts)
+import Precoded.Read (readInts)
 
 solve :: () -> ()
 solve () = undefined

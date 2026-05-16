@@ -1,7 +1,7 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 
-module EnhancedData.SegmentTree
+module Precoded.EnhancedData.SegmentTree
   ( Measured (..),
     SegTree (..),
     summary,

@@ -1,4 +1,4 @@
-module AbstractAlgebra where
+module Precoded.AbstractAlgebra where
 
 import Prelude hiding ((*), (+), (-), (/))
 import qualified Prelude as P

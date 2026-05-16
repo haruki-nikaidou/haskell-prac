@@ -5,7 +5,7 @@ module ABC453.B (main') where
 -- AC: https://atcoder.jp/contests/abc453/submissions/74997223
 import Data.List (mapAccumL)
 import Data.Maybe (mapMaybe)
-import Read (readInts)
+import Precoded.Read (readInts)
 
 solve :: Int -> [Int] -> [(Int, Int)]
 solve _ [] = []

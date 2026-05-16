@@ -1,4 +1,4 @@
-module Read where
+module Precoded.Read where
 
 import Control.Monad (replicateM)
 import qualified Data.ByteString.Char8 as BS
