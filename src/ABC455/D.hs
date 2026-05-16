@@ -1,10 +1,15 @@
+{-# LANGUAGE BangPatterns #-}
+{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE ScopedTypeVariables #-}
+
 module ABC455.D where
 
-import Control.Monad (replicateM)
+import Control.Monad
+import Control.Monad.ST
+import Data.Array.ST
+import Data.Array.Unboxed
 import qualified Data.ByteString.Char8 as BS
 import Data.Maybe (fromJust)
-import Data.Sequence (Seq, (><))
-import qualified Data.Sequence as Seq
 
 readInts :: IO [Int]
 readInts = map (fst . fromJust . BS.readInt) . BS.words <$> BS.getLine
@@ -13,39 +18,44 @@ readQueries :: (BS.ByteString -> q) -> Maybe Int -> IO [q]
 readQueries f (Just n) = map f <$> replicateM n BS.getLine
 readQueries f Nothing = map f . BS.lines <$> BS.getContents
 
-moveAbove :: [Seq Int] -> (Int, Int) -> [Seq Int]
-moveAbove stacks (p, q) =
-  let splitAtP s = case Seq.findIndexL (== p) s of
-        Just i -> Just (Seq.splitAt i s)
-        Nothing -> Nothing
+solve :: Int -> [(Int, Int)] -> [Int]
+solve n ops = elems (runSTUArray (build n ops))
 
-      hasQ s = p == q || q `elem` s
+build :: forall s. Int -> [(Int, Int)] -> ST s (STUArray s Int Int)
+build n ops = do
+  parent <- newArray (1, n) 0 :: ST s (STUArray s Int Int)
+  forM_ ops $ \(c, p) -> writeArray parent c p
 
-      tagged = [(s, splitAtP s, hasQ s) | s <- stacks]
+  root <- newArray (1, n) 0 :: ST s (STUArray s Int Int)
 
-      chunk = case [fp | (_, Just (_, fp), _) <- tagged] of
-        (c : _) -> c
-        [] -> Seq.empty
-   in [ case (mSplit, containsQ) of
-          (Just (below, _), False) -> below -- source stack: keep below p
-          (_, True) -> s >< chunk -- dest stack: append chunk
-          _ -> s -- untouched: share original
-      | (s, mSplit, containsQ) <- tagged
-      ]
+  let resolve :: Int -> ST s Int
+      resolve i = do
+        r <- readArray root i
+        if r /= 0
+          then return r
+          else do
+            par <- readArray parent i
+            if par == 0
+              then writeArray root i i >> return i
+              else do
+                r' <- resolve par
+                writeArray root i r'
+                return r'
 
-initializeStacks :: Int -> [Seq Int]
-initializeStacks n = [Seq.singleton i | i <- [1 .. n]]
-
-solve :: Int -> [(Int, Int)] -> [Seq Int]
-solve n operations = foldl moveAbove (initializeStacks n) operations
+  size <- newArray (1, n) 0 :: ST s (STUArray s Int Int)
+  forM_ [1 .. n] $ \i -> do
+    r <- resolve i
+    s <- readArray size r
+    writeArray size r (s + 1)
+  return size
 
 readOperation :: BS.ByteString -> (Int, Int)
-readOperation line =
-  let [a, b] = map (fst . fromJust . BS.readInt) (BS.words line)
-   in (a, b)
+readOperation bs =
+  let [c, p] = map (fst . fromJust . BS.readInt) (BS.words bs)
+   in (c, p)
 
-printAns :: [Seq Int] -> IO ()
-printAns stacks = putStrLn $ unwords $ map (show . Seq.length) stacks
+printAns :: [Int] -> IO ()
+printAns ans = putStrLn $ unwords (map show ans)
 
 main' :: IO ()
 main' = do
