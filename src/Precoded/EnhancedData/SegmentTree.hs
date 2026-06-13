@@ -5,12 +5,6 @@
 {-# LANGUAGE TypeOperators #-}
 {-# LANGUAGE UndecidableInstances #-}
 
-module Precoded.EnhancedData.SegmentTree where
-
-import Data.FingerTree (FingerTree, Measured (..), (><))
-import qualified Data.FingerTree as FT
-import Data.Monoid (Sum (..))
-
 -- | A FingerTree-backed segment tree for competitive programming.
 --
 -- It supports O(log n) range aggregation over a half-open interval @[l, r)@
@@ -72,6 +66,12 @@ import Data.Monoid (Sum (..))
 -- * 'update' is a point update; out-of-range indices leave the tree
 --   unchanged. The tree is persistent (immutable), so 'update' returns a
 --   new tree and the old one stays valid.
+module Precoded.EnhancedData.SegmentTree where
+
+import Data.FingerTree (FingerTree, Measured (..), (><))
+import qualified Data.FingerTree as FT
+import Data.Monoid (Sum (..))
+
 data Sized m = Sized {sizeOf :: !(Sum Int), aggOf :: !m}
 
 instance (Semigroup m) => Semigroup (Sized m) where
