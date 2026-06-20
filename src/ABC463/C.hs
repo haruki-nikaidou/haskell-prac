@@ -47,8 +47,23 @@ fromList = foldr step empty . runs
     step (l, r, v) (ChthollyTree m) =
       ChthollyTree (Map.insert l (RangeNode l r v) m)
 
+fromRangeList :: [((Int, Int), a)] -> ChthollyTree a
+fromRangeList = foldr step empty
+  where
+    step ((l, r), v) t = insertRange l r v t
+
 insertNode :: RangeNode a -> ChthollyTree a -> ChthollyTree a
 insertNode n (ChthollyTree m) = ChthollyTree (Map.insert (left n) n m)
+
+insertRange :: Int -> Int -> a -> ChthollyTree a -> ChthollyTree a
+insertRange l r v tree
+  | l >= r = tree
+  | otherwise =
+      let ChthollyTree m0 = splitAt' r (splitAt' l tree)
+          (below, _, fromL) = Map.splitLookup l m0
+          (_inside, atR, above) = Map.splitLookup r fromL
+          above' = maybe above (\n -> Map.insert r n above) atR
+       in ChthollyTree (Map.insert l (RangeNode l r v) (Map.union below above'))
 
 splitAt' :: Int -> ChthollyTree a -> ChthollyTree a
 splitAt' i t@(ChthollyTree m) =
@@ -102,15 +117,15 @@ updateRange a b f tree
   | a >= b = tree
   | otherwise =
       let ChthollyTree m0 = splitAt' b (splitAt' a tree)
-          (below, _, fromA) = Map.splitLookup a m0
-          (inside, mB, above) = Map.splitLookup b fromA
+          (below, atA, fromA) = Map.splitLookup a m0
+          (insideRest, mB, above) = Map.splitLookup b fromA
+          inside = maybe insideRest (\n -> Map.insert a n insideRest) atA
           above' = maybe above (\n -> Map.insert b n above) mB
           inside' = Map.map (\(RangeNode l r v) -> RangeNode l r (f v)) inside
           m1 = Map.unions [below, inside', above']
           coalesceInside :: (Eq a) => Int -> Int -> ChthollyTree a -> ChthollyTree a
           coalesceInside a' b' (ChthollyTree m) =
-            let -- Collect keys in [a, b] in ascending order; coalesce each in turn.
-                keysToCheck = takeWhile (<= b') . dropWhile (< a') $ Map.keys m
+            let keysToCheck = takeWhile (<= b') . dropWhile (< a') $ Map.keys m
              in foldr coalesceAt (ChthollyTree m) keysToCheck
        in coalesceInside a b (ChthollyTree m1)
 
@@ -131,10 +146,11 @@ parseDualInt line =
       int2_val = fst . fromJust $ BS.readInt int2_word
    in (int1_val, int2_val)
 
+fillRangeVal :: (Int, Int) -> ((Int, Int), Int)
+fillRangeVal (v, r) = ((0, r), v)
+
 offline :: [(Int, Int)] -> ChthollyTree Int
-offline list = foldr step empty list
-  where
-    step (val, r) tree = assign 0 r val tree
+offline = fromRangeList . map fillRangeVal
 
 solve :: [(Int, Int)] -> [Int] -> [Int]
 solve sorted_hl_pairs queries =
