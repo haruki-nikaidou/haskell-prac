@@ -49,10 +49,18 @@ library
       ABC458.E
       ABC458.F
       ABC458.G
+      ABC463.A
+      ABC463.B
+      ABC463.C
+      ABC463.D
+      ABC463.E
+      ABC463.F
+      ABC463.G
       C4.C2YQS
       C4.C74JC
       C4.C8ARX
       Precoded.AbstractAlgebra
+      Precoded.Algorithm.GraphSearch
       Precoded.EnhancedData.ChthollyTree
       Precoded.EnhancedData.DisjointSet
       Precoded.EnhancedData.SegmentTree
