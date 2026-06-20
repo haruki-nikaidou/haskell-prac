@@ -47,12 +47,6 @@ fromList = foldr step empty . runs
     step (l, r, v) (ChthollyTree m) =
       ChthollyTree (Map.insert l (RangeNode l r v) m)
 
-fromListWithRange :: (Eq a) => [(Int, Int, a)] -> ChthollyTree a
-fromListWithRange = foldr step empty
-  where
-    step (l, r, v) (ChthollyTree m) =
-      ChthollyTree (Map.insert l (RangeNode l r v) m)
-
 insertNode :: RangeNode a -> ChthollyTree a -> ChthollyTree a
 insertNode n (ChthollyTree m) = ChthollyTree (Map.insert (left n) n m)
 
@@ -138,7 +132,9 @@ parseDualInt line =
    in (int1_val, int2_val)
 
 offline :: [(Int, Int)] -> ChthollyTree Int
-offline list = fromListWithRange $ map (\(val, end_at) -> (0, end_at, val)) list
+offline list = foldr step empty list
+  where
+    step (val, r) tree = assign 0 r val tree
 
 solve :: [(Int, Int)] -> [Int] -> [Int]
 solve sorted_hl_pairs queries =
