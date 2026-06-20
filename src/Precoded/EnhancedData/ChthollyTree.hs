@@ -44,6 +44,11 @@ fromList = foldr step empty . runs
     step (l, r, v) (ChthollyTree m) =
       ChthollyTree (Map.insert l (RangeNode l r v) m)
 
+fromRangeList :: (Eq a) => [((Int, Int), a)] -> ChthollyTree a
+fromRangeList = foldr step empty
+  where
+    step ((l, r), v) (ChthollyTree m) = insertNode (RangeNode l r v) (ChthollyTree m)
+
 insertNode :: RangeNode a -> ChthollyTree a -> ChthollyTree a
 insertNode n (ChthollyTree m) = ChthollyTree (Map.insert (left n) n m)
 
