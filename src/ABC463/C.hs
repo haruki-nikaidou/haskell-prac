@@ -155,6 +155,6 @@ main = do
   unsorted_hl_pairs <- readQueries parseDualInt (Just n)
   _ <- readInt
   queries <- readInts
-  let sorted_hl_pairs = sortBy (comparing fst) unsorted_hl_pairs
+  let sorted_hl_pairs = sortBy (flip $ comparing fst) unsorted_hl_pairs
   let ans = solve sorted_hl_pairs queries
   printAns ans
