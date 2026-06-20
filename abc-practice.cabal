@@ -60,6 +60,7 @@ library
       C4.C74JC
       C4.C8ARX
       Precoded.AbstractAlgebra
+      Precoded.Algorithm.DP
       Precoded.Algorithm.GraphSearch
       Precoded.EnhancedData.ChthollyTree
       Precoded.EnhancedData.DisjointSet
